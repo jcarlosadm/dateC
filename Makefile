@@ -6,14 +6,15 @@ OBJ_DIR= objects
 BIN_DIR= bin
 
 # coloque aqui a lista de objetos do programa
-_OBJ= main.o
+_OBJ= calendar.o main.o
 
 # coloque as depedências de header files de cada objeto (exceto o header do próprio objeto)
 # veja o header file de cada objeto para uma pista dessas depedências
-DEP_MAIN=
+DEP_CALENDAR=calendar.h
+DEP_MAIN=calendar.h
 
 # as flags e opções usadas
-CC= g++
+CC= gcc
 CFLAGS= -c -Wall
 
 # nome do binário gerado
@@ -42,6 +43,9 @@ $(BIN_NAME): $(OBJ)
 	$(CC) -o $(BIN_DIR)/$@ $^
 
 $(OBJ_DIR)/main.o: main.c $(DEP_MAIN)
+	$(CC) $(CFLAGS) $< -o $@
+
+$(OBJ_DIR)/calendar.o: calendar.c $(DEP_CALENDAR)
 	$(CC) $(CFLAGS) $< -o $@
 
 .PHONY: clean

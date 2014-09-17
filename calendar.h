@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <time.h> // time_t, struct tm, funções de tempo
 #include <stdbool.h> // tipo bool, valores true, false
+#include <stdlib.h> // malloc, free
 
 /*
  * Enumerador das partes de uma data
@@ -174,5 +175,22 @@ char* getStringWeekDay(Calendar* calendar);
  * bool add : se true, adiciona. se false, subtrai
  */
 bool addComponentDate(Calendar* calendar, enum DateComponent dateComponent, int value, bool add);
+
+/*
+ * Imprime no prompt a data em um formato pré-especificado
+ *
+ * Calendar* calendar : ponteiro para objeto Calendar
+ * emun DateString dateString : enumerador que indica qual o formato da string
+ *      a ser utilizado (veja o enumerador neste header file)
+ * bool weekDayName : se o nome do dia da semana deve constar no final da string
+ */
+void printDate(Calendar* calendar, enum DateString dateString, bool weekDayName);
+
+/*
+ * Imprime o nome do dia da semana no prompt
+ *
+ * Calendar* calendar : ponteiro para o objeto Calendar
+ */
+void printWeekDate(Calendar* calendar);
 
 #endif /* CALENDAR_H_ */

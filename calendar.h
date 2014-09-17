@@ -7,8 +7,8 @@
 #define CALENDAR_H_
 
 #include <stdio.h>
-#include <time.h>
-#include <stdbool.h>
+#include <time.h> // time_t, struct tm, funções de tempo
+#include <stdbool.h> // tipo bool, valores true, false
 
 /*
  * Enumerador das partes de uma data

@@ -71,11 +71,11 @@ typedef struct calendar Calendar;
 Calendar* createCalendar();
 
 /*
- * Desaloca objeto Calendar
+ * Desaloca objeto Calendar, e retorna NULL
  *
  * Calendar* calendar : ponteiro para objeto Calendar a ser desalocado
  */
-void destroyCalendar(Calendar* calendar);
+Calendar* destroyCalendar(Calendar* calendar);
 
 /*
  * Configura a data do calendário para hoje

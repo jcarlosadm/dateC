@@ -13,6 +13,8 @@
 struct calendar{
     // data em segundos desde 1900
     time_t date;
+    // string que guarda uma composição de data quando solicitado
+    char* dateStringComp;
 };
 
 /*
@@ -131,6 +133,8 @@ Calendar* createCalendar(){
     Calendar* calendar = malloc(sizeof(Calendar));
     // configura data para hoje
     setDateToday(calendar);
+    // aloca string de composição de data
+    calendar->dateStringComp = malloc(sizeof(char)*40);
     // retorna ponteiro para Calendar
     return calendar;
 }
@@ -141,6 +145,10 @@ Calendar* createCalendar(){
  * Calendar* calendar : ponteiro para objeto Calendar a ser desalocado
  */
 Calendar* destroyCalendar(Calendar* calendar){
+    // desaloca string de composição de data
+    free(calendar->dateStringComp);
+    // atrinbui ponteiro de composição de data para NULL
+    calendar->dateStringComp = NULL;
     // libera memória de calendar
     free(calendar);
     // retorna NULL
@@ -289,6 +297,100 @@ int getDateComponent(Calendar* calendar, enum DateComponent dateComponent){
     default:
         return -1;
     }
+    
+}
+
+/*
+ * Gera uma string e retorna um ponteiro para essa string
+ *
+ * Calendar* calendar : ponteiro para objeto Calendar
+ * emun DateString dateString : enumerador que indica qual o formato da string
+ *      a ser utilizado (veja o enumerador neste header file)
+ * bool weekDayName : se o nome do dia da semana deve constar no final da string
+ */
+char* getStringDate(Calendar* calendar, enum DateString dateString,
+        bool weekDayName){
+    
+    struct tm* tm = localtime(&(calendar->date));
+    int day,month,year,hour,min,sec;
+    char ampm[3];
+    
+    if(dateString==DATE_DMY || dateString==DATE_YMD || dateString==DATE_DMY_HMS
+        || dateString==DATE_YMD_HMS || dateString==DATE_DMY_HMS_AMPM
+        || dateString==DATE_YMD_HMS_AMPM){
+        day = tm->tm_mday;
+        month = tm->tm_mon+1;
+        year = tm->tm_year+1900;
+    }
+    
+    if(dateString==DATE_HMS || dateString==DATE_DMY_HMS || dateString==DATE_YMD_HMS){
+        hour = tm->tm_hour;
+        min = tm->tm_min;
+        sec = tm->tm_sec;
+    }
+    
+    if(dateString==DATE_HMS_AMPM || dateString==DATE_DMY_HMS_AMPM
+        || dateString==DATE_YMD_HMS_AMPM){
+        hour = getHourInAmPm(tm->tm_hour);
+        min = tm->tm_min;
+        sec = tm->tm_sec;
+        strcpy(ampm,(getAmPmSystem(tm->tm_hour)==AM_SYSTEM ? "AM\0":"PM\0"));
+    }
+    
+    switch(dateString){
+    
+    case DATE_DMY:
+        sprintf(calendar->dateStringComp,"%d/%d/%d%c",day,month,year,0);
+        break;
+    case DATE_YMD:
+        sprintf(calendar->dateStringComp,"%d/%d/%d%c",year,month,day,0);
+        break;
+    case DATE_HMS:
+        sprintf(calendar->dateStringComp,"%d:%d:%d%c",hour,min,sec,0);
+        break;
+    case DATE_HMS_AMPM:
+        sprintf(calendar->dateStringComp,"%d:%d:%d %s%c",hour,min,sec,ampm,0);
+        break;
+    case DATE_DMY_HMS:
+        sprintf(calendar->dateStringComp,"%d/%d/%d %d:%d:%d%c",day,month,year,hour,min,sec,0);
+        break;
+    case DATE_YMD_HMS:
+        sprintf(calendar->dateStringComp,"%d/%d/%d %d:%d:%d%c",year,month,day,hour,min,sec,0);
+        break;
+    case DATE_DMY_HMS_AMPM:
+        sprintf(calendar->dateStringComp,"%d/%d/%d %d:%d:%d %s%c",day,month,year,hour,min,sec,ampm,0);
+        break;
+    case DATE_YMD_HMS_AMPM:
+        sprintf(calendar->dateStringComp,"%d/%d/%d %d:%d:%d %s%c",year,month,day,hour,min,sec,ampm,0);
+    }
+    
+    if(weekDayName){
+        
+        switch(tm->tm_wday){
+        case SUNDAY:
+            sprintf(calendar->dateStringComp,"%s Sunday%c",calendar->dateStringComp,0);
+            break;
+        case MONDAY:
+            sprintf(calendar->dateStringComp,"%s Monday%c",calendar->dateStringComp,0);
+            break;
+        case TUESDAY:
+            sprintf(calendar->dateStringComp,"%s Tuesday%c",calendar->dateStringComp,0);
+            break;
+        case WEDNESDAY:
+            sprintf(calendar->dateStringComp,"%s Wednesday%c",calendar->dateStringComp,0);
+            break;
+        case THURSDAY:
+            sprintf(calendar->dateStringComp,"%s Thursday%c",calendar->dateStringComp,0);
+            break;
+        case FRIDAY:
+            sprintf(calendar->dateStringComp,"%s Friday%c",calendar->dateStringComp,0);
+            break;
+        case SATURDAY:
+            sprintf(calendar->dateStringComp,"%s Saturday%c",calendar->dateStringComp,0);
+        }
+    }
+    
+    return (calendar->dateStringComp);
     
 }
 

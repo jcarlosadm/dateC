@@ -10,6 +10,7 @@
 #include <time.h> // time_t, struct tm, funções de tempo
 #include <stdbool.h> // tipo bool, valores true, false
 #include <stdlib.h> // malloc, free
+#include <string.h> // operações com string
 
 /*
  * Enumerador das partes de uma data

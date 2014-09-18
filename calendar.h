@@ -148,22 +148,32 @@ time_t getDateInSeconds(Calendar* calendar);
 int getDateComponent(Calendar* calendar, enum DateComponent dateComponent);
 
 /*
- * Gera uma string e retorna um ponteiro para essa string
+ * Gera uma string e guarda o resultado na memória onde o ponteiro fornecido
+ * aponta
+ * Retorna false se não conseguir
  *
  * Calendar* calendar : ponteiro para objeto Calendar
  * emun DateString dateString : enumerador que indica qual o formato da string
  *      a ser utilizado (veja o enumerador neste header file)
  * bool weekDayName : se o nome do dia da semana deve constar no final da string
+ * char* dateStringComp : ponteiro para string literal
+ *
+ * Obs: para char = 1byte, considere que a área de memória para onde o ponteiro
+ * da string literal aponta tenha pelo menos 40 bytes.
  */
-char* getStringDate(Calendar* calendar, enum DateString dateString,
-        bool weekDayName);
+bool getStringDate(Calendar* calendar, enum DateString dateString,
+        bool weekDayName, char* dateStringComp);
 
 /*
  * Gera uma string do dia da semana e o retorna
  *
  * Calendar* calendar : ponteiro para o objeto Calendar
+ * char* dateStringComp : ponteiro para string literal
+ *
+ * Obs: para char = 1byte, considere que a área de memória para onde o ponteiro
+ * da string literal aponta tenha pelo menos 10 bytes.
  */
-char* getStringWeekDay(Calendar* calendar);
+bool getStringWeekDay(Calendar* calendar, char* stringComp);
 
 /*
  * Adiciona (ou subtrai) uma quantidade em uma componente específica da data

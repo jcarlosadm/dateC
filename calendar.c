@@ -13,8 +13,6 @@
 struct calendar{
     // data em segundos desde 1900
     time_t date;
-    // string que guarda uma composição de data quando solicitado
-    char* dateStringComp;
 };
 
 /*
@@ -133,8 +131,6 @@ Calendar* createCalendar(){
     Calendar* calendar = malloc(sizeof(Calendar));
     // configura data para hoje
     setDateToday(calendar);
-    // aloca string de composição de data
-    calendar->dateStringComp = malloc(sizeof(char)*40);
     // retorna ponteiro para Calendar
     return calendar;
 }
@@ -145,10 +141,6 @@ Calendar* createCalendar(){
  * Calendar* calendar : ponteiro para objeto Calendar a ser desalocado
  */
 Calendar* destroyCalendar(Calendar* calendar){
-    // desaloca string de composição de data
-    free(calendar->dateStringComp);
-    // atrinbui ponteiro de composição de data para NULL
-    calendar->dateStringComp = NULL;
     // libera memória de calendar
     free(calendar);
     // retorna NULL
@@ -307,9 +299,13 @@ int getDateComponent(Calendar* calendar, enum DateComponent dateComponent){
  * emun DateString dateString : enumerador que indica qual o formato da string
  *      a ser utilizado (veja o enumerador neste header file)
  * bool weekDayName : se o nome do dia da semana deve constar no final da string
+ * char* dateStringComp : ponteiro para string literal
+ *
+ * Obs: para char = 1byte, considere que a área de memória para onde o ponteiro
+ * da string literal aponta tenha pelo menos 10 bytes.
  */
-char* getStringDate(Calendar* calendar, enum DateString dateString,
-        bool weekDayName){
+bool getStringDate(Calendar* calendar, enum DateString dateString,
+        bool weekDayName, char* dateStringComp){
     
     struct tm* tm = localtime(&(calendar->date));
     int day,month,year,hour,min,sec;
@@ -337,61 +333,164 @@ char* getStringDate(Calendar* calendar, enum DateString dateString,
         strcpy(ampm,(getAmPmSystem(tm->tm_hour)==AM_SYSTEM ? "AM\0":"PM\0"));
     }
     
+
     switch(dateString){
     
     case DATE_DMY:
-        sprintf(calendar->dateStringComp,"%d/%d/%d%c",day,month,year,0);
+        if(sprintf(dateStringComp,"%d/%d/%d%c",day,month,year,0) < 0)return false;
         break;
     case DATE_YMD:
-        sprintf(calendar->dateStringComp,"%d/%d/%d%c",year,month,day,0);
+        if(sprintf(dateStringComp,"%d/%d/%d%c",year,month,day,0) < 0)return false;
         break;
     case DATE_HMS:
-        sprintf(calendar->dateStringComp,"%d:%d:%d%c",hour,min,sec,0);
+        if(sprintf(dateStringComp,"%d:%d:%d%c",hour,min,sec,0) < 0)return false;
         break;
     case DATE_HMS_AMPM:
-        sprintf(calendar->dateStringComp,"%d:%d:%d %s%c",hour,min,sec,ampm,0);
+        if(sprintf(dateStringComp,"%d:%d:%d %s%c",hour,min,sec,ampm,0) < 0)return false;
         break;
     case DATE_DMY_HMS:
-        sprintf(calendar->dateStringComp,"%d/%d/%d %d:%d:%d%c",day,month,year,hour,min,sec,0);
+        if(sprintf(dateStringComp,"%d/%d/%d %d:%d:%d%c",day,month,year,hour,min,sec,0) < 0)return false;
         break;
     case DATE_YMD_HMS:
-        sprintf(calendar->dateStringComp,"%d/%d/%d %d:%d:%d%c",year,month,day,hour,min,sec,0);
+        if(sprintf(dateStringComp,"%d/%d/%d %d:%d:%d%c",year,month,day,hour,min,sec,0) < 0)return false;
         break;
     case DATE_DMY_HMS_AMPM:
-        sprintf(calendar->dateStringComp,"%d/%d/%d %d:%d:%d %s%c",day,month,year,hour,min,sec,ampm,0);
+        if(sprintf(dateStringComp,"%d/%d/%d %d:%d:%d %s%c",day,month,year,hour,min,sec,ampm,0) < 0)
+            return false;
         break;
     case DATE_YMD_HMS_AMPM:
-        sprintf(calendar->dateStringComp,"%d/%d/%d %d:%d:%d %s%c",year,month,day,hour,min,sec,ampm,0);
+        if(sprintf(dateStringComp,"%d/%d/%d %d:%d:%d %s%c",year,month,day,hour,min,sec,ampm,0) < 0)
+            return false;
     }
     
     if(weekDayName){
         
         switch(tm->tm_wday){
         case SUNDAY:
-            sprintf(calendar->dateStringComp,"%s Sunday%c",calendar->dateStringComp,0);
+            if(sprintf(dateStringComp,"%s Sunday%c",dateStringComp,0) < 0)return false;
             break;
         case MONDAY:
-            sprintf(calendar->dateStringComp,"%s Monday%c",calendar->dateStringComp,0);
+            if(sprintf(dateStringComp,"%s Monday%c",dateStringComp,0) < 0)return false;
             break;
         case TUESDAY:
-            sprintf(calendar->dateStringComp,"%s Tuesday%c",calendar->dateStringComp,0);
+            if(sprintf(dateStringComp,"%s Tuesday%c",dateStringComp,0) < 0)return false;
             break;
         case WEDNESDAY:
-            sprintf(calendar->dateStringComp,"%s Wednesday%c",calendar->dateStringComp,0);
+            if(sprintf(dateStringComp,"%s Wednesday%c",dateStringComp,0) < 0)return false;
             break;
         case THURSDAY:
-            sprintf(calendar->dateStringComp,"%s Thursday%c",calendar->dateStringComp,0);
+            if(sprintf(dateStringComp,"%s Thursday%c",dateStringComp,0) < 0)return false;
             break;
         case FRIDAY:
-            sprintf(calendar->dateStringComp,"%s Friday%c",calendar->dateStringComp,0);
+            if(sprintf(dateStringComp,"%s Friday%c",dateStringComp,0) < 0)return false;
             break;
         case SATURDAY:
-            sprintf(calendar->dateStringComp,"%s Saturday%c",calendar->dateStringComp,0);
+            if(sprintf(dateStringComp,"%s Saturday%c",dateStringComp,0) < 0)return false;
         }
     }
     
-    return (calendar->dateStringComp);
-    
+    return true;
+
+}
+
+/*
+ * Gera uma string do dia da semana e o retorna
+ *
+ * Calendar* calendar : ponteiro para o objeto Calendar
+ * char* dateStringComp : ponteiro para string literal
+ *
+ * Obs: para char = 1byte, considere que a área de memória para onde o ponteiro
+ * da string literal aponta tenha pelo menos 10 bytes.
+ */
+bool getStringWeekDay(Calendar* calendar, char* stringComp){
+
+    struct tm* tm = localtime(&(calendar->date));
+
+    switch(tm->tm_wday){
+    case SUNDAY:
+        if(sprintf(stringComp,"Sunday%c",0) < 0)return false;
+        break;
+    case MONDAY:
+        if(sprintf(stringComp,"Monday%c",0) < 0)return false;
+        break;
+    case TUESDAY:
+        if(sprintf(stringComp,"Tuesday%c",0) < 0)return false;
+        break;
+    case WEDNESDAY:
+        if(sprintf(stringComp,"Wednesday%c",0) < 0)return false;
+        break;
+    case THURSDAY:
+        if(sprintf(stringComp,"Thursday%c",0) < 0)return false;
+        break;
+    case FRIDAY:
+        if(sprintf(stringComp,"Friday%c",0) < 0)return false;
+        break;
+    case SATURDAY:
+        if(sprintf(stringComp,"Saturday%c",0) < 0)return false;
+    }
+
+    return true;
+}
+
+/*
+ * Adiciona (ou subtrai) uma quantidade em uma componente específica da data
+ * Retorna false se não conseguir, e true em caso contrário
+ *
+ * Calendar* calendar : ponteiro para o objeto Calendar
+ * enum DateComponent dateComponent : enumerador que indica a parte do calendário
+ *      a ser operado (veja o enumerador neste header file)
+ * int value : valor a ser adicionado (ou subtraído) na componente de data
+ * bool add : se true, adiciona. se false, subtrai
+ */
+bool addComponentDate(Calendar* calendar, enum DateComponent dateComponent, int value, bool add){
+    struct tm* tm = localtime(&(calendar->date));
+
+    switch(dateComponent){
+    case MDAY:
+        if(add) tm->tm_mday += value;
+        else tm->tm_mday -= value;
+        break;
+    case YDAY:
+        if(add) tm->tm_yday += value;
+        else tm->tm_yday -= value;
+        break;
+    case WDAY:
+        if(add) tm->tm_wday += value;
+        else tm->tm_wday -= value;
+        break;
+    case MONTH:
+        if(add) tm->tm_mon += value;
+        else tm->tm_mon -= value;
+        break;
+    case YEAR:
+        if(add) tm->tm_year += value;
+        else tm->tm_year -= value;
+        break;
+    case HOUR:
+        if(add) tm->tm_hour += value;
+        else tm->tm_hour -= value;
+        break;
+    case HOUR_AMPM:
+        if(add) tm->tm_hour += value;
+        else tm->tm_hour -= value;
+        break;
+    case MINUTE:
+        if(add) tm->tm_min += value;
+        else tm->tm_min -= value;
+        break;
+    case SECOND:
+        if(add) tm->tm_sec += value;
+        else tm->tm_sec -= value;
+    }
+
+    time_t date2 = mktime(tm);
+
+    if(date2 != -1){
+        calendar->date = date2;
+        return true;
+    }
+    else
+        return false;
 }
 
 /*

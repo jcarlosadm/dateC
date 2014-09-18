@@ -117,6 +117,43 @@ time_t makeDate(int day,int month,int year,int hour,int minute,int second){
     return date;
 }
 
+bool validateDate(int day,int month,int year,int hour,int minute,int second){
+
+    // primeira checagem
+    if(second<0 || second>59)
+        return false;
+    else if(minute<0 || minute>59)
+        return false;
+    else if(hour<0 || hour>23)
+        return false;
+    else if(month<1 || month>12)
+        return false;
+    else if(day<1 || day>31)
+        return false;
+
+    // agora vamos validar o dia
+    switch(month){
+    case 2:
+        if(year%4==0 && day>29)return false;
+        else if(day>28)return false;
+        break;
+    case 4:
+        if(day>30)return false;
+        break;
+    case 6:
+        if(day>30)return false;
+        break;
+    case 9:
+        if(day>30)return false;
+        break;
+    case 11:
+        if(day>30)return false;
+    }
+
+    return true;
+
+}
+
 /* ******************************************
  * Funções públicas do calendário
  ********************************************/
@@ -168,23 +205,16 @@ void setDateToday(Calendar* calendar){
  */
 bool setDatePartial(Calendar* calendar, int day, int month, int year){
 
+    if(!validateDate(day,month,year,0,0,0)) return false;
+
     // constrói uma data com os valores passados
     time_t date = makeDate(day,month,year,0,0,0);
 
     // se conseguiu passar para segundos ...
     if(date != -1){
-
-        struct tm* tm = localtime(&date);
-
-        // verifica se a data foi passada com os os valores de day, month, year
-        if(tm->tm_mday==day && tm->tm_mon==(month-1) && tm->tm_year == (year-1900)){
-            // sucesso
-            calendar->date = date;
-            return true;
-        }
-        // caso contrário retorna false
-        else
-            return false;
+        // sucesso
+        calendar->date = date;
+        return true;
     }
     // caso contrário retorna false
     else
@@ -207,24 +237,16 @@ bool setDatePartial(Calendar* calendar, int day, int month, int year){
 bool setDateComplete(Calendar* calendar, int day, int month, int year,
         int hour, int minute, int second){
 
+    if(!validateDate(day,month,year,hour,minute,second))return false;
+
     // constrói uma data com os valores passados
     time_t date = makeDate(day,month,year,hour,minute,second);
 
     // se conseguiu passar para segundos ...
     if(date != -1){
-
-        struct tm* tm = localtime(&date);
-
-        // verifica se a data foi passada com os os valores de day, month, year
-        if(tm->tm_mday==day && tm->tm_mon==(month-1) && tm->tm_year == (year-1900) &&
-                tm->tm_hour==hour && tm->tm_min==minute && tm->tm_sec == second){
-            // sucesso
-            calendar->date = date;
-            return true;
-        }
-        // caso contrário retorna false
-        else
-            return false;
+        // sucesso
+        calendar->date = date;
+        return true;
     }
     // caso contrário retorna false
     else

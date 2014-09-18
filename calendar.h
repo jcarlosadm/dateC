@@ -87,7 +87,7 @@ void setDateToday(Calendar* calendar);
 
 /*
  * Configura uma data específica no calendário
- * Retorna true se conseguir, e false caso contrário
+ * Retorna true se conseguir, e false caso contrário (a data não é válida)
  *
  * Calendar* calendar : ponteiro para objeto Calendar a ter a data configurada
  * int day : dia do mês
@@ -98,7 +98,7 @@ bool setDatePartial(Calendar* calendar, int day, int month, int year);
 
 /*
  * Configura a data completa do calendário
- * Retorna true se conseguir, e false caso contrário
+ * Retorna true se conseguir, e false caso contrário (a data não é válida)
  *
  * Calendar* calendar : ponteiro para objeto Calendar a ter a data configurada
  * int day : dia do mês
@@ -192,5 +192,18 @@ void printDate(Calendar* calendar, enum DateString dateString, bool weekDayName)
  * Calendar* calendar : ponteiro para o objeto Calendar
  */
 void printWeekDate(Calendar* calendar);
+
+/*
+ * Verifica se uma data é válida
+ * Retorna false em caso negativo
+ *
+ * int day : dia
+ * int month : mês
+ * int year : ano
+ * int hour : hora
+ * int minute : minuto
+ * int second : segundo
+ */
+bool validateDate(int day,int month,int year,int hour,int minute,int second);
 
 #endif /* CALENDAR_H_ */

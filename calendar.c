@@ -117,45 +117,6 @@ time_t makeDate(int day,int month,int year,int hour,int minute,int second){
     return date;
 }
 
-bool validateDate(int day,int month,int year,int hour,int minute,int second){
-
-    // primeira checagem
-    if(second<0 || second>59)
-        return false;
-    else if(minute<0 || minute>59)
-        return false;
-    else if(hour<0 || hour>23)
-        return false;
-    else if(month<1 || month>12)
-        return false;
-    else if(day<1 || day>31)
-        return false;
-
-    // agora vamos validar o dia
-    switch(month){
-    case 2:
-        if(year%4==0){
-            if(day>29) return false;
-        }
-        else if(day>28)return false;
-        break;
-    case 4:
-        if(day>30)return false;
-        break;
-    case 6:
-        if(day>30)return false;
-        break;
-    case 9:
-        if(day>30)return false;
-        break;
-    case 11:
-        if(day>30)return false;
-    }
-
-    return true;
-
-}
-
 /* ******************************************
  * Funções públicas do calendário
  ********************************************/
@@ -286,6 +247,52 @@ time_t getDateInSeconds(Calendar* calendar){
 }
 
 /*
+ * Retorna um componente do calendário (dia, mês, ano, hora ...)
+ * Retorna -1 se, por algum motivo, não conseguir retorna o solicitado
+ *
+ * Calendar* calendar : ponteiro para objeto Calendar
+ * enum DateComponent dateComponent : enumerador que indica a parte do calendário
+ *      a ser retornado (veja o enumerador neste header file)
+ *
+ * Obs: alguns retornos específicos:
+ * dia do mês: 1 - 31
+ * dia do ano: 1 - 365
+ * dia da semana: 0(para domingo) - 6(para sábado)
+ * mês: 1-12
+ * hora: 0-23
+ * hora_ampm: 1-12
+ * outros: formatos esperados
+ */
+int getDateComponent(Calendar* calendar, enum DateComponent dateComponent){
+    
+    struct tm* tm = localtime(&(calendar->date));
+    
+    switch(dateComponent){
+    case MDAY:
+        return tm->tm_mday;
+    case YDAY:
+        return tm->tm_yday;
+    case WDAY:
+        return tm->tm_wday;
+    case MONTH:
+        return (tm->tm_mon + 1);
+    case YEAR:
+        return (tm->tm_year + 1900);
+    case HOUR:
+        return tm->tm_hour;
+    case HOUR_AMPM:
+        return getHourInAmPm(tm->tm_hour);
+    case MINUTE:
+        return tm->tm_min;
+    case SECOND:
+        return tm->tm_sec;
+    default:
+        return -1;
+    }
+    
+}
+
+/*
  * Imprime no prompt a data em um formato pré-especificado
  *
  * Calendar* calendar : ponteiro para objeto Calendar
@@ -358,7 +365,55 @@ void printDate(Calendar* calendar, enum DateString dateString, bool weekDayName)
 
 }
 
+/*
+ * Verifica se uma data é válida
+ * Retorna false em caso negativo
+ *
+ * int day : dia
+ * int month : mês
+ * int year : ano
+ * int hour : hora
+ * int minute : minuto
+ * int second : segundo
+ */
+bool validateDate(int day,int month,int year,int hour,int minute,int second){
 
+    // primeira checagem
+    if(second<0 || second>59)
+        return false;
+    else if(minute<0 || minute>59)
+        return false;
+    else if(hour<0 || hour>23)
+        return false;
+    else if(month<1 || month>12)
+        return false;
+    else if(day<1 || day>31)
+        return false;
+
+    // agora vamos validar o dia
+    switch(month){
+    case 2:
+        if(year%4==0){
+            if(day>29) return false;
+        }
+        else if(day>28)return false;
+        break;
+    case 4:
+        if(day>30)return false;
+        break;
+    case 6:
+        if(day>30)return false;
+        break;
+    case 9:
+        if(day>30)return false;
+        break;
+    case 11:
+        if(day>30)return false;
+    }
+
+    return true;
+
+}
 
 
 /**

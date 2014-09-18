@@ -134,7 +134,9 @@ bool validateDate(int day,int month,int year,int hour,int minute,int second){
     // agora vamos validar o dia
     switch(month){
     case 2:
-        if(year%4==0 && day>29)return false;
+        if(year%4==0){
+            if(day>29) return false;
+        }
         else if(day>28)return false;
         break;
     case 4:

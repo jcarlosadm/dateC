@@ -29,6 +29,8 @@ enum AMPMSystem {
 
 /*
  * Pega hora em formato 24 horas e devolve em formato AM PM
+ *
+ * int hour : hora em formato 24 horas
  */
 int getHourInAmPm(int hour){
     int returning;
@@ -37,19 +39,82 @@ int getHourInAmPm(int hour){
         returning = 12;
     else if(hour > 12 && hour < 24)
         returning = (hour - 12);
+    else
+        returning = hour;
 
     return returning;
 }
 
 /*
- * Pega hora em formato 24 horas e devolve se corresponde a
- * AM ou PM
+ * Pega hora em formato 24 horas e devolve valor de AM_SYSTEM ou
+ * PM_SYSTEM
+ *
+ * int hour : hora em formato de 24 horas
  */
 int getAmPmSystem(int hour){
     if(hour >= 0 && hour < 12)
         return AM_SYSTEM;
     else
         return PM_SYSTEM;
+}
+
+/*
+ * Imprime o dia da semana de acordo com o valor fornecido
+ *
+ * int weekDay : dia da semana (0 - 6, começando pelo Domingo)
+ */
+void printWeek(int weekDay){
+
+    // imprime uma string de acordo com o dia da semana
+    switch(weekDay){
+    case SUNDAY:
+        printf(" Sunday");
+        break;
+
+    case MONDAY:
+        printf(" Monday");
+        break;
+
+    case TUESDAY:
+        printf(" Tuesday");
+        break;
+
+    case WEDNESDAY:
+        printf(" Wednesday");
+        break;
+
+    case THURSDAY:
+        printf(" Thursday");
+        break;
+
+    case FRIDAY:
+        printf(" Friday");
+        break;
+
+    case SATURDAY:
+        printf(" Saturday");
+    }
+
+}
+
+/*
+ * Cria data em segundos desde 1900
+ */
+time_t makeDate(int day,int month,int year,int hour,int minute,int second){
+
+    // constrói uma data com os valores passados
+    struct tm tm;
+    tm.tm_mday = day;
+    tm.tm_mon = month - 1;
+    tm.tm_year = year - 1900;
+    tm.tm_hour = hour;
+    tm.tm_min = minute;
+    tm.tm_sec = second;
+
+    // passa para o formato em segundos desde 1900
+    time_t date = mktime(&tm);
+
+    return date;
 }
 
 /* ******************************************
@@ -90,6 +155,81 @@ Calendar* destroyCalendar(Calendar* calendar){
 void setDateToday(Calendar* calendar){
     // configura data atual no objeto Calendar
     calendar->date = time(0);
+}
+
+/*
+ * Configura uma data específica no calendário
+ * Retorna true se conseguir, e false caso contrário
+ *
+ * Calendar* calendar : ponteiro para objeto Calendar a ter a data configurada
+ * int day : dia do mês
+ * int month : mês
+ * int year : ano
+ */
+bool setDatePartial(Calendar* calendar, int day, int month, int year){
+
+    // constrói uma data com os valores passados
+    time_t date = makeDate(day,month,year,0,0,0);
+
+    // se conseguiu passar para segundos ...
+    if(date != -1){
+
+        struct tm* tm = localtime(&date);
+
+        // verifica se a data foi passada com os os valores de day, month, year
+        if(tm->tm_mday==day && tm->tm_mon==(month-1) && tm->tm_year == (year-1900)){
+            // sucesso
+            calendar->date = date;
+            return true;
+        }
+        // caso contrário retorna false
+        else
+            return false;
+    }
+    // caso contrário retorna false
+    else
+        return false;
+
+}
+
+/*
+ * Configura a data completa do calendário
+ * Retorna true se conseguir, e false caso contrário
+ *
+ * Calendar* calendar : ponteiro para objeto Calendar a ter a data configurada
+ * int day : dia do mês
+ * int month : mês
+ * int year: ano
+ * int hour : hora
+ * int minute : minuto
+ * int second : segundo
+ */
+bool setDateComplete(Calendar* calendar, int day, int month, int year,
+        int hour, int minute, int second){
+
+    // constrói uma data com os valores passados
+    time_t date = makeDate(day,month,year,hour,minute,second);
+
+    // se conseguiu passar para segundos ...
+    if(date != -1){
+
+        struct tm* tm = localtime(&date);
+
+        // verifica se a data foi passada com os os valores de day, month, year
+        if(tm->tm_mday==day && tm->tm_mon==(month-1) && tm->tm_year == (year-1900) &&
+                tm->tm_hour==hour && tm->tm_min==minute && tm->tm_sec == second){
+            // sucesso
+            calendar->date = date;
+            return true;
+        }
+        // caso contrário retorna false
+        else
+            return false;
+    }
+    // caso contrário retorna false
+    else
+        return false;
+
 }
 
 /*
@@ -186,34 +326,7 @@ void printDate(Calendar* calendar, enum DateString dateString, bool weekDayName)
 
     // imprime o nome do dia da semana, se foi solicitado
     if(weekDayName){
-        switch(tm->tm_wday){
-        case SUNDAY:
-            printf(" Sunday");
-            break;
-
-        case MONDAY:
-            printf(" Monday");
-            break;
-
-        case TUESDAY:
-            printf(" Tuesday");
-            break;
-
-        case WEDNESDAY:
-            printf(" Wednesday");
-            break;
-
-        case THURSDAY:
-            printf(" Thursday");
-            break;
-
-        case FRIDAY:
-            printf(" Friday");
-            break;
-
-        case SATURDAY:
-            printf(" Saturday");
-        }
+        printWeek(tm->tm_wday);
     }
 
     // dá quebra de linha

@@ -184,6 +184,11 @@ bool getStringWeekDay(Calendar* calendar, char* stringComp);
  *      a ser operado (veja o enumerador neste header file)
  * int value : valor a ser adicionado (ou subtraído) na componente de data
  * bool add : se true, adiciona. se false, subtrai
+ *
+ * Obs: se estiver no dia 29 de fevereiro em um ano dissexto e adicionar uma quantidade de
+ * anos que resulte em um ano não bissexto, o resultado será em uma data diferente de 29 de
+ * fevereiro. O mesmo acontece quando adicionamos meses e estamos no dia 31 (afinal, nem todos os
+ * meses possuem 31 dias) ou mesmo 30 e caímos em fevereiro (que tem 28/29 dias).
  */
 bool addComponentDate(Calendar* calendar, enum DateComponent dateComponent, int value, bool add);
 

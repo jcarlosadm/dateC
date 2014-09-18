@@ -68,31 +68,31 @@ void printWeek(int weekDay){
     // imprime uma string de acordo com o dia da semana
     switch(weekDay){
     case SUNDAY:
-        printf(" Sunday");
+        printf("Sunday ");
         break;
 
     case MONDAY:
-        printf(" Monday");
+        printf("Monday ");
         break;
 
     case TUESDAY:
-        printf(" Tuesday");
+        printf("Tuesday ");
         break;
 
     case WEDNESDAY:
-        printf(" Wednesday");
+        printf("Wednesday ");
         break;
 
     case THURSDAY:
-        printf(" Thursday");
+        printf("Thursday ");
         break;
 
     case FRIDAY:
-        printf(" Friday");
+        printf("Friday ");
         break;
 
     case SATURDAY:
-        printf(" Saturday");
+        printf("Saturday ");
     }
 
 }
@@ -509,51 +509,51 @@ void printDate(Calendar* calendar, enum DateString dateString, bool weekDayName)
     switch(dateString){
 
     case DATE_DMY:
-        printf("%d/%d/%d",tm->tm_mday,tm->tm_mon+1,tm->tm_year+1900);
+        printf("%d/%d/%d ",tm->tm_mday,tm->tm_mon+1,tm->tm_year+1900);
         break;
 
     case DATE_YMD:
-        printf("%d/%d/%d",tm->tm_year+1900,tm->tm_mon+1,tm->tm_mday);
+        printf("%d/%d/%d ",tm->tm_year+1900,tm->tm_mon+1,tm->tm_mday);
         break;
 
     case DATE_HMS:
-        printf("%d:%d:%d",tm->tm_hour,tm->tm_min,tm->tm_sec);
+        printf("%d:%d:%d ",tm->tm_hour,tm->tm_min,tm->tm_sec);
         break;
 
     case DATE_HMS_AMPM:
-        printf("%d:%d:%d",getHourInAmPm(tm->tm_hour),tm->tm_min,tm->tm_sec);
+        printf("%d:%d:%d ",getHourInAmPm(tm->tm_hour),tm->tm_min,tm->tm_sec);
         if(getAmPmSystem(tm->tm_hour) == AM_SYSTEM)
-            printf(" AM");
+            printf("AM ");
         else
-            printf(" PM");
+            printf("PM ");
         break;
 
     case DATE_DMY_HMS:
-        printf("%d/%d/%d %d:%d:%d",tm->tm_mday,tm->tm_mon+1,tm->tm_year+1900,
+        printf("%d/%d/%d %d:%d:%d ",tm->tm_mday,tm->tm_mon+1,tm->tm_year+1900,
                 tm->tm_hour,tm->tm_min,tm->tm_sec);
         break;
 
     case DATE_YMD_HMS:
-        printf("%d/%d/%d %d:%d:%d",tm->tm_year+1900,tm->tm_mon+1,tm->tm_mday,
+        printf("%d/%d/%d %d:%d:%d ",tm->tm_year+1900,tm->tm_mon+1,tm->tm_mday,
                 tm->tm_hour,tm->tm_min,tm->tm_sec);
         break;
 
     case DATE_DMY_HMS_AMPM:
-        printf("%d/%d/%d %d:%d:%d",tm->tm_mday,tm->tm_mon+1,tm->tm_year+1900,
+        printf("%d/%d/%d %d:%d:%d ",tm->tm_mday,tm->tm_mon+1,tm->tm_year+1900,
                 getHourInAmPm(tm->tm_hour),tm->tm_min,tm->tm_sec);
         if(getAmPmSystem(tm->tm_hour) == AM_SYSTEM)
-            printf(" AM");
+            printf("AM ");
         else
-            printf(" PM");
+            printf("PM");
         break;
 
     case DATE_YMD_HMS_AMPM:
-        printf("%d/%d/%d %d:%d:%d",tm->tm_year+1900,tm->tm_mon+1,tm->tm_mday,
+        printf("%d/%d/%d %d:%d:%d ",tm->tm_year+1900,tm->tm_mon+1,tm->tm_mday,
                 getHourInAmPm(tm->tm_hour),tm->tm_min,tm->tm_sec);
         if(getAmPmSystem(tm->tm_hour) == AM_SYSTEM)
-            printf(" AM");
+            printf("AM ");
         else
-            printf(" PM");
+            printf("PM ");
     }
 
     // imprime o nome do dia da semana, se foi solicitado
@@ -564,6 +564,17 @@ void printDate(Calendar* calendar, enum DateString dateString, bool weekDayName)
     // dá quebra de linha
     printf("\n");
 
+}
+
+/*
+ * Imprime o nome do dia da semana no prompt
+ *
+ * Calendar* calendar : ponteiro para o objeto Calendar
+ */
+void printWeekDate(Calendar* calendar){
+    struct tm* tm = localtime(&(calendar->date));
+
+    printWeek(tm->tm_wday);
 }
 
 /*
@@ -615,11 +626,3 @@ bool validateDate(int day,int month,int year,int hour,int minute,int second){
     return true;
 
 }
-
-
-/**
- * Lembrete para implementação
- * Para addCompontDate: se dia 29 do mês fevereiro, se add ano diferente de 4, -1 dia e +x ano
- *                      se dia 31 e add mes com menos dias, -1 (ou -2/-3 se fev) dia e +mes
- *                      se dia 30 e add mes fevereiro, -2 (ou -1) dia e +mes
- */

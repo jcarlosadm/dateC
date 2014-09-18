@@ -15,8 +15,45 @@ struct calendar{
     time_t date;
 };
 
+/*
+ * enumerador que indica AM ou PM
+ */
+enum AMPMSystem {
+    AM_SYSTEM,
+    PM_SYSTEM
+};
+
+/* *****************************************
+ * Funções privadas
+ *******************************************/
+
+/*
+ * Pega hora em formato 24 horas e devolve em formato AM PM
+ */
+int getHourInAmPm(int hour){
+    int returning;
+
+    if(hour == 0)
+        returning = 12;
+    else if(hour > 12 && hour < 24)
+        returning = (hour - 12);
+
+    return returning;
+}
+
+/*
+ * Pega hora em formato 24 horas e devolve se corresponde a
+ * AM ou PM
+ */
+int getAmPmSystem(int hour){
+    if(hour >= 0 && hour < 12)
+        return AM_SYSTEM;
+    else
+        return PM_SYSTEM;
+}
+
 /* ******************************************
- * Funções do calendário
+ * Funções públicas do calendário
  ********************************************/
 
 /*
@@ -95,8 +132,93 @@ time_t getDateInSeconds(Calendar* calendar){
 void printDate(Calendar* calendar, enum DateString dateString, bool weekDayName){
     // coloca data em uma estrutura struct tm (ver time.h)
     struct tm* tm = localtime(&(calendar->date));
-    // imprime data em um formato específico
-    printf("%d/%d/%d\n",tm->tm_mday,tm->tm_mon+1,tm->tm_year+1900);
+
+    // imprime de acordo com o formato determinado em dateString
+    switch(dateString){
+
+    case DATE_DMY:
+        printf("%d/%d/%d",tm->tm_mday,tm->tm_mon+1,tm->tm_year+1900);
+        break;
+
+    case DATE_YMD:
+        printf("%d/%d/%d",tm->tm_year+1900,tm->tm_mon+1,tm->tm_mday);
+        break;
+
+    case DATE_HMS:
+        printf("%d:%d:%d",tm->tm_hour,tm->tm_min,tm->tm_sec);
+        break;
+
+    case DATE_HMS_AMPM:
+        printf("%d:%d:%d",getHourInAmPm(tm->tm_hour),tm->tm_min,tm->tm_sec);
+        if(getAmPmSystem(tm->tm_hour) == AM_SYSTEM)
+            printf(" AM");
+        else
+            printf(" PM");
+        break;
+
+    case DATE_DMY_HMS:
+        printf("%d/%d/%d %d:%d:%d",tm->tm_mday,tm->tm_mon+1,tm->tm_year+1900,
+                tm->tm_hour,tm->tm_min,tm->tm_sec);
+        break;
+
+    case DATE_YMD_HMS:
+        printf("%d/%d/%d %d:%d:%d",tm->tm_year+1900,tm->tm_mon+1,tm->tm_mday,
+                tm->tm_hour,tm->tm_min,tm->tm_sec);
+        break;
+
+    case DATE_DMY_HMS_AMPM:
+        printf("%d/%d/%d %d:%d:%d",tm->tm_mday,tm->tm_mon+1,tm->tm_year+1900,
+                getHourInAmPm(tm->tm_hour),tm->tm_min,tm->tm_sec);
+        if(getAmPmSystem(tm->tm_hour) == AM_SYSTEM)
+            printf(" AM");
+        else
+            printf(" PM");
+        break;
+
+    case DATE_YMD_HMS_AMPM:
+        printf("%d/%d/%d %d:%d:%d",tm->tm_year+1900,tm->tm_mon+1,tm->tm_mday,
+                getHourInAmPm(tm->tm_hour),tm->tm_min,tm->tm_sec);
+        if(getAmPmSystem(tm->tm_hour) == AM_SYSTEM)
+            printf(" AM");
+        else
+            printf(" PM");
+    }
+
+    // imprime o nome do dia da semana, se foi solicitado
+    if(weekDayName){
+        switch(tm->tm_wday){
+        case SUNDAY:
+            printf(" Sunday");
+            break;
+
+        case MONDAY:
+            printf(" Monday");
+            break;
+
+        case TUESDAY:
+            printf(" Tuesday");
+            break;
+
+        case WEDNESDAY:
+            printf(" Wednesday");
+            break;
+
+        case THURSDAY:
+            printf(" Thursday");
+            break;
+
+        case FRIDAY:
+            printf(" Friday");
+            break;
+
+        case SATURDAY:
+            printf(" Saturday");
+        }
+    }
+
+    // dá quebra de linha
+    printf("\n");
+
 }
 
 

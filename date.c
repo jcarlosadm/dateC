@@ -1,18 +1,18 @@
 /*
- * calendar.c
+ * date.c
  *
  */
 
-#include "calendar.h"
+#include "date.h"
 
 /*
- * Estrutura do objeto calendário
+ * Estrutura do objeto data
  *
  * Armazena data e hora
  */
-struct calendar{
-    // data em segundos desde 1900
-    time_t date;
+struct date{
+    // dados em segundos desde 1900
+    time_t data;
 };
 
 /*
@@ -112,71 +112,71 @@ time_t makeDate(int day,int month,int year,int hour,int minute,int second){
     tm.tm_sec = second;
 
     // passa para o formato em segundos desde 1900
-    time_t date = mktime(&tm);
+    time_t data = mktime(&tm);
 
-    return date;
+    return data;
 }
 
 /* ******************************************
- * Funções públicas do calendário
+ * Funções públicas da data
  ********************************************/
 
 /*
- * Cria o calendário
- * Aloca memória para um objeto Calendar e
+ * Cria o data
+ * Aloca memória para um objeto Date e
  * retorna um ponteiro para a memória alocada
  */
-Calendar* createCalendar(){
-    // aloca objeto Calendar
-    Calendar* calendar = malloc(sizeof(Calendar));
+Date* createDate(){
+    // aloca objeto Date
+    Date* date = malloc(sizeof(Date));
     // configura data para hoje
-    setDateToday(calendar);
-    // retorna ponteiro para Calendar
-    return calendar;
+    setDateToday(date);
+    // retorna ponteiro para Date
+    return date;
 }
 
 /*
- * Desaloca objeto Calendar, e retorna NULL
+ * Desaloca objeto Date, e retorna NULL
  *
- * Calendar* calendar : ponteiro para objeto Calendar a ser desalocado
+ * Date* date : ponteiro para objeto Date a ser desalocado
  */
-Calendar* destroyCalendar(Calendar* calendar){
-    // libera memória de calendar
-    free(calendar);
+Date* destroyDate(Date* date){
+    // libera memória de date
+    free(date);
     // retorna NULL
     return NULL;
 }
 
 /*
- * Configura a data do calendário para hoje
+ * Configura a data para hoje
  *
- * Calendar* calendar : ponteiro para objeto Calendar a ter a data configurada
+ * Date* date : ponteiro para objeto Date a ter a data configurada
  */
-void setDateToday(Calendar* calendar){
-    // configura data atual no objeto Calendar
-    calendar->date = time(0);
+void setDateToday(Date* date){
+    // configura data atual no objeto Date
+    date->data = time(0);
 }
 
 /*
- * Configura uma data específica no calendário
+ * Configura uma data específica no data
  * Retorna true se conseguir, e false caso contrário
  *
- * Calendar* calendar : ponteiro para objeto Calendar a ter a data configurada
+ * Date* date : ponteiro para objeto Date a ter a data configurada
  * int day : dia do mês
  * int month : mês
  * int year : ano
  */
-bool setDatePartial(Calendar* calendar, int day, int month, int year){
+bool setDatePartial(Date* date, int day, int month, int year){
 
     if(!validateDate(day,month,year,0,0,0)) return false;
 
     // constrói uma data com os valores passados
-    time_t date = makeDate(day,month,year,0,0,0);
+    time_t data = makeDate(day,month,year,0,0,0);
 
     // se conseguiu passar para segundos ...
-    if(date != -1){
+    if(data != -1){
         // sucesso
-        calendar->date = date;
+        date->data = data;
         return true;
     }
     // caso contrário retorna false
@@ -186,10 +186,10 @@ bool setDatePartial(Calendar* calendar, int day, int month, int year){
 }
 
 /*
- * Configura a data completa do calendário
+ * Configura a data completa
  * Retorna true se conseguir, e false caso contrário
  *
- * Calendar* calendar : ponteiro para objeto Calendar a ter a data configurada
+ * Date* date : ponteiro para objeto Date a ter a data configurada
  * int day : dia do mês
  * int month : mês
  * int year: ano
@@ -197,18 +197,18 @@ bool setDatePartial(Calendar* calendar, int day, int month, int year){
  * int minute : minuto
  * int second : segundo
  */
-bool setDateComplete(Calendar* calendar, int day, int month, int year,
+bool setDateComplete(Date* date, int day, int month, int year,
         int hour, int minute, int second){
 
     if(!validateDate(day,month,year,hour,minute,second))return false;
 
     // constrói uma data com os valores passados
-    time_t date = makeDate(day,month,year,hour,minute,second);
+    time_t data = makeDate(day,month,year,hour,minute,second);
 
     // se conseguiu passar para segundos ...
-    if(date != -1){
+    if(data != -1){
         // sucesso
-        calendar->date = date;
+        date->data = data;
         return true;
     }
     // caso contrário retorna false
@@ -221,37 +221,37 @@ bool setDateComplete(Calendar* calendar, int day, int month, int year,
  * Define a data dos segundos a partir de 1900
  * Retorna true se conseguir, e false caso contrário
  *
- * Calendar* calendar : ponteiro para objeto Calendar a ter a data configurada
+ * Date* date : ponteiro para objeto Date a ter a data configurada
  * time_t seconds : segundos desde 1900
  */
-bool setDateOfSeconds(Calendar* calendar, time_t seconds){
+bool setDateOfSeconds(Date* date, time_t seconds){
     // se segundos menores que zero, retorna false
     if(seconds<0)
         return false;
     // caso contrário...
     else{
         // define nova data e retorna sucesso
-        calendar->date = seconds;
+        date->data = seconds;
         return true;
     }
 }
 
 /*
- * Retorna a data do calendário em segundos desde 1900
+ * Retorna a data em segundos desde 1900
  *
- * Calendar* calendar : ponteiro para objeto Calendar
+ * Date* date : ponteiro para objeto Date
  */
-time_t getDateInSeconds(Calendar* calendar){
+time_t getDateInSeconds(Date* date){
     // retorna segundos totais desde 1900
-    return calendar->date;
+    return date->data;
 }
 
 /*
- * Retorna um componente do calendário (dia, mês, ano, hora ...)
+ * Retorna um componente da data (dia, mês, ano, hora ...)
  * Retorna -1 se, por algum motivo, não conseguir retorna o solicitado
  *
- * Calendar* calendar : ponteiro para objeto Calendar
- * enum DateComponent dateComponent : enumerador que indica a parte do calendário
+ * Date* date : ponteiro para objeto Date
+ * enum DateComponent dateComponent : enumerador que indica a parte da data
  *      a ser retornado (veja o enumerador neste header file)
  *
  * Obs: alguns retornos específicos:
@@ -263,9 +263,9 @@ time_t getDateInSeconds(Calendar* calendar){
  * hora_ampm: 1-12
  * outros: formatos esperados
  */
-int getDateComponent(Calendar* calendar, enum DateComponent dateComponent){
+int getDateComponent(Date* date, enum DateComponent dateComponent){
     
-    struct tm* tm = localtime(&(calendar->date));
+    struct tm* tm = localtime(&(date->data));
     
     switch(dateComponent){
     case MDAY:
@@ -295,7 +295,7 @@ int getDateComponent(Calendar* calendar, enum DateComponent dateComponent){
 /*
  * Gera uma string e retorna um ponteiro para essa string
  *
- * Calendar* calendar : ponteiro para objeto Calendar
+ * Date* date : ponteiro para objeto Date
  * emun DateString dateString : enumerador que indica qual o formato da string
  *      a ser utilizado (veja o enumerador neste header file)
  * bool weekDayName : se o nome do dia da semana deve constar no final da string
@@ -304,10 +304,10 @@ int getDateComponent(Calendar* calendar, enum DateComponent dateComponent){
  * Obs: para char = 1byte, considere que a área de memória para onde o ponteiro
  * da string literal aponta tenha pelo menos 10 bytes.
  */
-bool getStringDate(Calendar* calendar, enum DateString dateString,
+bool getStringDate(Date* date, enum DateString dateString,
         bool weekDayName, char* dateStringComp){
     
-    struct tm* tm = localtime(&(calendar->date));
+    struct tm* tm = localtime(&(date->data));
     int day,month,year,hour,min,sec;
     char ampm[3];
     
@@ -396,15 +396,15 @@ bool getStringDate(Calendar* calendar, enum DateString dateString,
 /*
  * Gera uma string do dia da semana e o retorna
  *
- * Calendar* calendar : ponteiro para o objeto Calendar
+ * Date* date : ponteiro para o objeto Date
  * char* dateStringComp : ponteiro para string literal
  *
  * Obs: para char = 1byte, considere que a área de memória para onde o ponteiro
  * da string literal aponta tenha pelo menos 10 bytes.
  */
-bool getStringWeekDay(Calendar* calendar, char* stringComp){
+bool getStringWeekDay(Date* date, char* stringComp){
 
-    struct tm* tm = localtime(&(calendar->date));
+    struct tm* tm = localtime(&(date->data));
 
     switch(tm->tm_wday){
     case SUNDAY:
@@ -436,14 +436,14 @@ bool getStringWeekDay(Calendar* calendar, char* stringComp){
  * Adiciona (ou subtrai) uma quantidade em uma componente específica da data
  * Retorna false se não conseguir, e true em caso contrário
  *
- * Calendar* calendar : ponteiro para o objeto Calendar
- * enum DateComponent dateComponent : enumerador que indica a parte do calendário
+ * Date* date : ponteiro para o objeto Date
+ * enum DateComponent dateComponent : enumerador que indica a parte da data
  *      a ser operado (veja o enumerador neste header file)
  * int value : valor a ser adicionado (ou subtraído) na componente de data
  * bool add : se true, adiciona. se false, subtrai
  */
-bool addComponentDate(Calendar* calendar, enum DateComponent dateComponent, int value, bool add){
-    struct tm* tm = localtime(&(calendar->date));
+bool addComponentDate(Date* date, enum DateComponent dateComponent, int value, bool add){
+    struct tm* tm = localtime(&(date->data));
 
     switch(dateComponent){
     case MDAY:
@@ -486,7 +486,7 @@ bool addComponentDate(Calendar* calendar, enum DateComponent dateComponent, int 
     time_t date2 = mktime(tm);
 
     if(date2 != -1){
-        calendar->date = date2;
+        date->data = date2;
         return true;
     }
     else
@@ -496,14 +496,14 @@ bool addComponentDate(Calendar* calendar, enum DateComponent dateComponent, int 
 /*
  * Imprime no prompt a data em um formato pré-especificado
  *
- * Calendar* calendar : ponteiro para objeto Calendar
+ * Date* date : ponteiro para objeto Date
  * emun DateString dateString : enumerador que indica qual o formato da string
  *      a ser utilizado (veja o enumerador neste header file)
  * bool weekDayName : se o nome do dia da semana deve constar no final da string
  */
-void printDate(Calendar* calendar, enum DateString dateString, bool weekDayName){
+void printDate(Date* date, enum DateString dateString, bool weekDayName){
     // coloca data em uma estrutura struct tm (ver time.h)
-    struct tm* tm = localtime(&(calendar->date));
+    struct tm* tm = localtime(&(date->data));
 
     // imprime de acordo com o formato determinado em dateString
     switch(dateString){
@@ -569,10 +569,10 @@ void printDate(Calendar* calendar, enum DateString dateString, bool weekDayName)
 /*
  * Imprime o nome do dia da semana no prompt
  *
- * Calendar* calendar : ponteiro para o objeto Calendar
+ * Date* date : ponteiro para o objeto Date
  */
-void printWeekDate(Calendar* calendar){
-    struct tm* tm = localtime(&(calendar->date));
+void printWeekDate(Date* date){
+    struct tm* tm = localtime(&(date->data));
 
     printWeek(tm->tm_wday);
 }

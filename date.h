@@ -1,10 +1,10 @@
 /*
- * calendar.h
+ * date.h
  *
  */
 
-#ifndef CALENDAR_H_
-#define CALENDAR_H_
+#ifndef DATE_H_
+#define DATE_H_
 
 #include <stdio.h>
 #include <time.h> // time_t, struct tm, funções de tempo
@@ -59,30 +59,30 @@ enum WeekComponent{
  *
  * Armazena data e hora
  */
-typedef struct calendar Calendar;
+typedef struct date Date;
 
 /* ******************************************
- * Funções do calendário
+ * Funções de Data
  ********************************************/
 
 /*
- * Cria o calendário
- * Aloca memória para um objeto Calendar e
+ * Cria a Data
+ * Aloca memória para um objeto Date e
  * retorna um ponteiro para a memória alocada
  */
-Calendar* createCalendar();
+Calendar* createDate();
 
 /*
- * Desaloca objeto Calendar, e retorna NULL
+ * Desaloca objeto Date, e retorna NULL
  *
- * Calendar* calendar : ponteiro para objeto Calendar a ser desalocado
+ * Date* date : ponteiro para objeto Date a ser desalocado
  */
-Calendar* destroyCalendar(Calendar* calendar);
+Calendar* destroyDate(Date* date);
 
 /*
- * Configura a data do calendário para hoje
+ * Configura a data para hoje
  *
- * Calendar* calendar : ponteiro para objeto Calendar a ter a data configurada
+ * Date* Date : ponteiro para objeto Calendar a ter a data configurada
  */
 void setDateToday(Calendar* calendar);
 
@@ -222,4 +222,4 @@ void printWeekDate(Calendar* calendar);
  */
 bool validateDate(int day,int month,int year,int hour,int minute,int second);
 
-#endif /* CALENDAR_H_ */
+#endif /* DATE_H_ */

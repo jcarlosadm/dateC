@@ -1,13 +1,16 @@
-/*
- * date.c
- *
+/**
+ * \file date.c
+ * Implementação do arquivo date.h
  */
 
 #include "../h_files/date.h"
 
-/*
+/******************************************************************************
+ * Estruturas
+ ******************************************************************************/
+
+/**
  * Estrutura do objeto data
- *
  * Armazena data e hora
  */
 struct date{
@@ -15,7 +18,7 @@ struct date{
     time_t data;
 };
 
-/*
+/**
  * enumerador que indica AM ou PM
  */
 enum AMPMSystem {
@@ -23,14 +26,14 @@ enum AMPMSystem {
     PM_SYSTEM
 };
 
-/* *****************************************
+/*****************************************************************************
  * Funções privadas
- *******************************************/
+ *****************************************************************************/
 
-/*
+/**
  * Pega hora em formato 24 horas e devolve em formato AM PM
- *
- * int hour : hora em formato 24 horas
+ * \return Hora no formato 12 horas
+ * \param hour Hora em formato 24 horas
  */
 int getHourInAmPm(int hour){
     int returning;
@@ -45,11 +48,11 @@ int getHourInAmPm(int hour){
     return returning;
 }
 
-/*
+/**
  * Pega hora em formato 24 horas e devolve valor de AM_SYSTEM ou
  * PM_SYSTEM
- *
- * int hour : hora em formato de 24 horas
+ * \return AM_SYSTEM ou PM_SYSTEM
+ * \param hour Hora em formato de 24 horas
  */
 int getAmPmSystem(int hour){
     if(hour >= 0 && hour < 12)
@@ -58,10 +61,9 @@ int getAmPmSystem(int hour){
         return PM_SYSTEM;
 }
 
-/*
+/**
  * Imprime o dia da semana de acordo com o valor fornecido
- *
- * int weekDay : dia da semana (0 - 6, começando pelo Domingo)
+ * \param weekDay Dia da semana (0 - 6, começando pelo Domingo)
  */
 void printWeek(int weekDay){
 
@@ -97,8 +99,15 @@ void printWeek(int weekDay){
 
 }
 
-/*
+/**
  * Cria data em segundos desde 1900
+ * \return Segundos desde 1900
+ * \param day Dia do mês
+ * \param month Mês
+ * \param year Ano
+ * \param hour Hora
+ * \param minute Minutos
+ * \param second Segundos
  */
 time_t makeDate(int day,int month,int year,int hour,int minute,int second){
 
@@ -117,14 +126,14 @@ time_t makeDate(int day,int month,int year,int hour,int minute,int second){
     return data;
 }
 
-/* ******************************************
- * Funções públicas da data
- ********************************************/
+/****************************************************************************
+ * Funções públicas
+ ****************************************************************************/
 
-/*
- * Cria o data
- * Aloca memória para um objeto Date e
- * retorna um ponteiro para a memória alocada
+/**
+ * Cria a Data
+ * Aloca memória para um objeto Date
+ * \return Ponteiro para objeto Date
  */
 Date* createDate(){
     // aloca objeto Date
@@ -135,10 +144,10 @@ Date* createDate(){
     return date;
 }
 
-/*
- * Desaloca objeto Date, e retorna NULL
- *
- * Date* date : ponteiro para objeto Date a ser desalocado
+/**
+ * Desaloca objeto Date
+ * \return NULL
+ * \param date Ponteiro para objeto Date a ser desalocado
  */
 Date* destroyDate(Date* date){
     // libera memória de date
@@ -147,24 +156,22 @@ Date* destroyDate(Date* date){
     return NULL;
 }
 
-/*
- * Configura a data para hoje
- *
- * Date* date : ponteiro para objeto Date a ter a data configurada
+/**
+ * Configura a data para a data atual
+ * \param date Ponteiro para objeto Date a ter a data configurada
  */
 void setDateToday(Date** date){
     // configura data atual no objeto Date
     (*date)->data = time(0);
 }
 
-/*
- * Configura uma data específica no data
- * Retorna true se conseguir, e false caso contrário
- *
- * Date* date : ponteiro para objeto Date a ter a data configurada
- * int day : dia do mês
- * int month : mês
- * int year : ano
+/**
+ * Configura uma data específica
+ * \return true se conseguir, e false caso contrário (a data não é válida)
+ * \param date Ponteiro para objeto Date a ter a data configurada
+ * \param day Dia do mês
+ * \param month Mês
+ * \param year Ano
  */
 bool setDatePartial(Date** date, int day, int month, int year){
 
@@ -185,17 +192,16 @@ bool setDatePartial(Date** date, int day, int month, int year){
 
 }
 
-/*
+/**
  * Configura a data completa
- * Retorna true se conseguir, e false caso contrário
- *
- * Date* date : ponteiro para objeto Date a ter a data configurada
- * int day : dia do mês
- * int month : mês
- * int year: ano
- * int hour : hora
- * int minute : minuto
- * int second : segundo
+ * \return true se conseguir, e false caso contrário (a data não é válida)
+ * \param date Ponteiro para objeto Date a ter a data configurada
+ * \param day Dia do mês
+ * \param month Mês
+ * \param year Ano
+ * \param hour Hora
+ * \param minute Minuto
+ * \param second Segundo
  */
 bool setDateComplete(Date** date, int day, int month, int year,
         int hour, int minute, int second){
@@ -217,12 +223,11 @@ bool setDateComplete(Date** date, int day, int month, int year,
 
 }
 
-/*
+/**
  * Define a data dos segundos a partir de 1900
- * Retorna true se conseguir, e false caso contrário
- *
- * Date* date : ponteiro para objeto Date a ter a data configurada
- * time_t seconds : segundos desde 1900
+ * \return true se conseguir, e false caso contrário
+ * \param date Ponteiro para objeto Date a ter a data configurada
+ * \param seconds Segundos desde 1900
  */
 bool setDateOfSeconds(Date** date, time_t seconds){
     // se segundos menores que zero, retorna false
@@ -236,32 +241,30 @@ bool setDateOfSeconds(Date** date, time_t seconds){
     }
 }
 
-/*
+/**
  * Retorna a data em segundos desde 1900
- *
- * Date* date : ponteiro para objeto Date
+ * \return Segundos desde 1900
+ * \param date Ponteiro para objeto Date
  */
 time_t getDateInSeconds(Date** date){
     // retorna segundos totais desde 1900
     return (*date)->data;
 }
 
-/*
+/**
  * Retorna um componente da data (dia, mês, ano, hora ...)
- * Retorna -1 se, por algum motivo, não conseguir retorna o solicitado
- *
- * Date* date : ponteiro para objeto Date
- * enum DateComponent dateComponent : enumerador que indica a parte da data
- *      a ser retornado (veja o enumerador neste header file)
- *
- * Obs: alguns retornos específicos:
- * dia do mês: 1 - 31
- * dia do ano: 1 - 365
- * dia da semana: 0(para domingo) - 6(para sábado)
- * mês: 1-12
- * hora: 0-23
- * hora_ampm: 1-12
- * outros: formatos esperados
+ * \return -1 se, por algum motivo, não conseguir retorna o solicitado<BR>
+ * Alguns retornos específicos:<BR>
+ * &nbsp; &nbsp; dia do mês: 1 - 31<BR>
+ * &nbsp; &nbsp; dia do ano: 1 - 365<BR>
+ * &nbsp; &nbsp; dia da semana: 0(para domingo) - 6(para sábado)<BR>
+ * &nbsp; &nbsp; mês: 1-12<BR>
+ * &nbsp; &nbsp; hora: 0-23<BR>
+ * &nbsp; &nbsp; hora_ampm: 1-12<BR>
+ * &nbsp; &nbsp; outros: formatos esperados
+ * \param date Ponteiro para objeto Date
+ * \param dateComponent Enumerador que indica a parte da data
+ *      a ser retornada (veja o enumerador neste header file)
  */
 int getDateComponent(Date** date, enum DateComponent dateComponent){
     
@@ -292,17 +295,17 @@ int getDateComponent(Date** date, enum DateComponent dateComponent){
     
 }
 
-/*
- * Gera uma string e retorna um ponteiro para essa string
- *
- * Date* date : ponteiro para objeto Date
- * emun DateString dateString : enumerador que indica qual o formato da string
- *      a ser utilizado (veja o enumerador neste header file)
- * bool weekDayName : se o nome do dia da semana deve constar no final da string
- * char* dateStringComp : ponteiro para string literal
- *
+/**
+ * Gera uma string e guarda o resultado na memória onde o ponteiro fornecido
+ * aponta<BR>
  * Obs: para char = 1byte, considere que a área de memória para onde o ponteiro
- * da string literal aponta tenha pelo menos 10 bytes.
+ * da string literal aponta tenha pelo menos 40 bytes.
+ * \return false se não conseguir, true em caso contrário
+ * \param date Ponteiro para objeto Date
+ * \param dateString Enumerador que indica qual o formato da string
+ *      a ser utilizado (veja o enumerador neste header file)
+ * \param weekDayName Se o nome do dia da semana deve constar no final da string
+ * \param dateStringComp Ponteiro para string literal a ser modificada
  */
 bool getStringDate(Date** date, enum DateString dateString,
         bool weekDayName, char* dateStringComp){
@@ -393,14 +396,13 @@ bool getStringDate(Date** date, enum DateString dateString,
 
 }
 
-/*
- * Gera uma string do dia da semana e o retorna
- *
- * Date* date : ponteiro para o objeto Date
- * char* dateStringComp : ponteiro para string literal
- *
+/**
+ * Gera uma string do dia da semana e o retorna<BR>
  * Obs: para char = 1byte, considere que a área de memória para onde o ponteiro
  * da string literal aponta tenha pelo menos 10 bytes.
+ * \return true se bem sucedido, false em caso contrário
+ * \param date Ponteiro para o objeto Date
+ * \param dateStringComp Ponteiro para string literal
  */
 bool getStringWeekDay(Date** date, char* stringComp){
 
@@ -432,15 +434,18 @@ bool getStringWeekDay(Date** date, char* stringComp){
     return true;
 }
 
-/*
- * Adiciona (ou subtrai) uma quantidade em uma componente específica da data
- * Retorna false se não conseguir, e true em caso contrário
- *
- * Date* date : ponteiro para o objeto Date
- * enum DateComponent dateComponent : enumerador que indica a parte da data
+/**
+ * Adiciona (ou subtrai) uma quantidade em uma componente específica da data<BR>
+ * Obs: se estiver no dia 29 de fevereiro em um ano dissexto e adicionar uma quantidade de
+ * anos que resulte em um ano não bissexto, o resultado será em uma data diferente de 29 de
+ * fevereiro. O mesmo acontece quando adicionamos meses e estamos no dia 31 (afinal, nem todos os
+ * meses possuem 31 dias) ou mesmo 30 e caímos em fevereiro (que tem 28/29 dias).
+ * \return false se não conseguir, e true em caso contrário
+ * \param date Ponteiro para o objeto Date
+ * \param dateComponent Enumerador que indica a parte da data
  *      a ser operado (veja o enumerador neste header file)
- * int value : valor a ser adicionado (ou subtraído) na componente de data
- * bool add : se true, adiciona. se false, subtrai
+ * \param value Valor a ser adicionado (ou subtraído) na componente de data
+ * \param add Se true, adiciona. se false, subtrai
  */
 bool addComponentDate(Date** date, enum DateComponent dateComponent, int value, bool add){
     struct tm* tm = localtime(&((*date)->data));
@@ -493,13 +498,12 @@ bool addComponentDate(Date** date, enum DateComponent dateComponent, int value, 
         return false;
 }
 
-/*
+/**
  * Imprime no prompt a data em um formato pré-especificado
- *
- * Date* date : ponteiro para objeto Date
- * emun DateString dateString : enumerador que indica qual o formato da string
+ * \param date Ponteiro para objeto Date
+ * \param dateString Enumerador que indica qual o formato da string
  *      a ser utilizado (veja o enumerador neste header file)
- * bool weekDayName : se o nome do dia da semana deve constar no final da string
+ * \param weekDayName Se o nome do dia da semana deve constar no final da string
  */
 void printDate(Date** date, enum DateString dateString, bool weekDayName){
     // coloca data em uma estrutura struct tm (ver time.h)
@@ -566,10 +570,9 @@ void printDate(Date** date, enum DateString dateString, bool weekDayName){
 
 }
 
-/*
+/**
  * Imprime o nome do dia da semana no prompt
- *
- * Date* date : ponteiro para o objeto Date
+ * \param date Ponteiro para o objeto Date
  */
 void printWeekDate(Date** date){
     struct tm* tm = localtime(&((*date)->data));
@@ -577,16 +580,15 @@ void printWeekDate(Date** date){
     printWeek(tm->tm_wday);
 }
 
-/*
+/**
  * Verifica se uma data é válida
- * Retorna false em caso negativo
- *
- * int day : dia
- * int month : mês
- * int year : ano
- * int hour : hora
- * int minute : minuto
- * int second : segundo
+ * \return false em caso negativo
+ * \param day Dia
+ * \param month Mês
+ * \param year Ano
+ * \param hour Hora
+ * \param minute Minuto
+ * \param second Segundo
  */
 bool validateDate(int day,int month,int year,int hour,int minute,int second){
 

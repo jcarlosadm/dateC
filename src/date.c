@@ -130,7 +130,7 @@ Date* createDate(){
     // aloca objeto Date
     Date* date = malloc(sizeof(Date));
     // configura data para hoje
-    setDateToday(date);
+    setDateToday(&date);
     // retorna ponteiro para Date
     return date;
 }
@@ -152,9 +152,9 @@ Date* destroyDate(Date* date){
  *
  * Date* date : ponteiro para objeto Date a ter a data configurada
  */
-void setDateToday(Date* date){
+void setDateToday(Date** date){
     // configura data atual no objeto Date
-    date->data = time(0);
+    (*date)->data = time(0);
 }
 
 /*
@@ -166,7 +166,7 @@ void setDateToday(Date* date){
  * int month : mês
  * int year : ano
  */
-bool setDatePartial(Date* date, int day, int month, int year){
+bool setDatePartial(Date** date, int day, int month, int year){
 
     if(!validateDate(day,month,year,0,0,0)) return false;
 
@@ -176,7 +176,7 @@ bool setDatePartial(Date* date, int day, int month, int year){
     // se conseguiu passar para segundos ...
     if(data != -1){
         // sucesso
-        date->data = data;
+        (*date)->data = data;
         return true;
     }
     // caso contrário retorna false
@@ -197,7 +197,7 @@ bool setDatePartial(Date* date, int day, int month, int year){
  * int minute : minuto
  * int second : segundo
  */
-bool setDateComplete(Date* date, int day, int month, int year,
+bool setDateComplete(Date** date, int day, int month, int year,
         int hour, int minute, int second){
 
     if(!validateDate(day,month,year,hour,minute,second))return false;
@@ -208,7 +208,7 @@ bool setDateComplete(Date* date, int day, int month, int year,
     // se conseguiu passar para segundos ...
     if(data != -1){
         // sucesso
-        date->data = data;
+        (*date)->data = data;
         return true;
     }
     // caso contrário retorna false
@@ -224,14 +224,14 @@ bool setDateComplete(Date* date, int day, int month, int year,
  * Date* date : ponteiro para objeto Date a ter a data configurada
  * time_t seconds : segundos desde 1900
  */
-bool setDateOfSeconds(Date* date, time_t seconds){
+bool setDateOfSeconds(Date** date, time_t seconds){
     // se segundos menores que zero, retorna false
     if(seconds<0)
         return false;
     // caso contrário...
     else{
         // define nova data e retorna sucesso
-        date->data = seconds;
+        (*date)->data = seconds;
         return true;
     }
 }
@@ -241,9 +241,9 @@ bool setDateOfSeconds(Date* date, time_t seconds){
  *
  * Date* date : ponteiro para objeto Date
  */
-time_t getDateInSeconds(Date* date){
+time_t getDateInSeconds(Date** date){
     // retorna segundos totais desde 1900
-    return date->data;
+    return (*date)->data;
 }
 
 /*
@@ -263,9 +263,9 @@ time_t getDateInSeconds(Date* date){
  * hora_ampm: 1-12
  * outros: formatos esperados
  */
-int getDateComponent(Date* date, enum DateComponent dateComponent){
+int getDateComponent(Date** date, enum DateComponent dateComponent){
     
-    struct tm* tm = localtime(&(date->data));
+    struct tm* tm = localtime(&((*date)->data));
     
     switch(dateComponent){
     case MDAY:
@@ -304,10 +304,10 @@ int getDateComponent(Date* date, enum DateComponent dateComponent){
  * Obs: para char = 1byte, considere que a área de memória para onde o ponteiro
  * da string literal aponta tenha pelo menos 10 bytes.
  */
-bool getStringDate(Date* date, enum DateString dateString,
+bool getStringDate(Date** date, enum DateString dateString,
         bool weekDayName, char* dateStringComp){
     
-    struct tm* tm = localtime(&(date->data));
+    struct tm* tm = localtime(&((*date)->data));
     int day,month,year,hour,min,sec;
     char ampm[3];
     
@@ -402,9 +402,9 @@ bool getStringDate(Date* date, enum DateString dateString,
  * Obs: para char = 1byte, considere que a área de memória para onde o ponteiro
  * da string literal aponta tenha pelo menos 10 bytes.
  */
-bool getStringWeekDay(Date* date, char* stringComp){
+bool getStringWeekDay(Date** date, char* stringComp){
 
-    struct tm* tm = localtime(&(date->data));
+    struct tm* tm = localtime(&((*date)->data));
 
     switch(tm->tm_wday){
     case SUNDAY:
@@ -442,8 +442,8 @@ bool getStringWeekDay(Date* date, char* stringComp){
  * int value : valor a ser adicionado (ou subtraído) na componente de data
  * bool add : se true, adiciona. se false, subtrai
  */
-bool addComponentDate(Date* date, enum DateComponent dateComponent, int value, bool add){
-    struct tm* tm = localtime(&(date->data));
+bool addComponentDate(Date** date, enum DateComponent dateComponent, int value, bool add){
+    struct tm* tm = localtime(&((*date)->data));
 
     switch(dateComponent){
     case MDAY:
@@ -486,7 +486,7 @@ bool addComponentDate(Date* date, enum DateComponent dateComponent, int value, b
     time_t date2 = mktime(tm);
 
     if(date2 != -1){
-        date->data = date2;
+        (*date)->data = date2;
         return true;
     }
     else
@@ -501,9 +501,9 @@ bool addComponentDate(Date* date, enum DateComponent dateComponent, int value, b
  *      a ser utilizado (veja o enumerador neste header file)
  * bool weekDayName : se o nome do dia da semana deve constar no final da string
  */
-void printDate(Date* date, enum DateString dateString, bool weekDayName){
+void printDate(Date** date, enum DateString dateString, bool weekDayName){
     // coloca data em uma estrutura struct tm (ver time.h)
-    struct tm* tm = localtime(&(date->data));
+    struct tm* tm = localtime(&((*date)->data));
 
     // imprime de acordo com o formato determinado em dateString
     switch(dateString){
@@ -571,8 +571,8 @@ void printDate(Date* date, enum DateString dateString, bool weekDayName){
  *
  * Date* date : ponteiro para o objeto Date
  */
-void printWeekDate(Date* date){
-    struct tm* tm = localtime(&(date->data));
+void printWeekDate(Date** date){
+    struct tm* tm = localtime(&((*date)->data));
 
     printWeek(tm->tm_wday);
 }

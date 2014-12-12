@@ -78,7 +78,7 @@ Date* destroyDate(Date* date);
  * Configura a data para a data atual
  * \param date Ponteiro para objeto Date a ter a data configurada
  */
-void setDateToday(Date* date);
+void setDateToday(Date** date);
 
 /**
  * Configura uma data específica
@@ -88,7 +88,7 @@ void setDateToday(Date* date);
  * \param month Mês
  * \param year Ano
  */
-bool setDatePartial(Date* date, int day, int month, int year);
+bool setDatePartial(Date** date, int day, int month, int year);
 
 /**
  * Configura a data completa
@@ -101,7 +101,7 @@ bool setDatePartial(Date* date, int day, int month, int year);
  * \param minute Minuto
  * \param second Segundo
  */
-bool setDateComplete(Date* date, int day, int month, int year,
+bool setDateComplete(Date** date, int day, int month, int year,
         int hour, int minute, int second);
 
 /**
@@ -110,14 +110,14 @@ bool setDateComplete(Date* date, int day, int month, int year,
  * \param date Ponteiro para objeto Date a ter a data configurada
  * \param seconds Segundos desde 1900
  */
-bool setDateOfSeconds(Date* date, time_t seconds);
+bool setDateOfSeconds(Date** date, time_t seconds);
 
 /**
  * Retorna a data em segundos desde 1900
  * \return Segundos desde 1900
  * \param date Ponteiro para objeto Date
  */
-time_t getDateInSeconds(Date* date);
+time_t getDateInSeconds(Date** date);
 
 /**
  * Retorna um componente da data (dia, mês, ano, hora ...)
@@ -134,7 +134,7 @@ time_t getDateInSeconds(Date* date);
  * \param dateComponent Enumerador que indica a parte da data
  *      a ser retornada (veja o enumerador neste header file)
  */
-int getDateComponent(Date* date, enum DateComponent dateComponent);
+int getDateComponent(Date** date, enum DateComponent dateComponent);
 
 /**
  * Gera uma string e guarda o resultado na memória onde o ponteiro fornecido
@@ -148,7 +148,7 @@ int getDateComponent(Date* date, enum DateComponent dateComponent);
  * \param weekDayName Se o nome do dia da semana deve constar no final da string
  * \param dateStringComp Ponteiro para string literal a ser modificada
  */
-bool getStringDate(Date* date, enum DateString dateString,
+bool getStringDate(Date** date, enum DateString dateString,
         bool weekDayName, char* dateStringComp);
 
 /**
@@ -159,7 +159,7 @@ bool getStringDate(Date* date, enum DateString dateString,
  * \param date Ponteiro para o objeto Date
  * \param dateStringComp Ponteiro para string literal
  */
-bool getStringWeekDay(Date* date, char* stringComp);
+bool getStringWeekDay(Date** date, char* stringComp);
 
 /**
  * Adiciona (ou subtrai) uma quantidade em uma componente específica da data<BR>
@@ -174,7 +174,7 @@ bool getStringWeekDay(Date* date, char* stringComp);
  * \param value Valor a ser adicionado (ou subtraído) na componente de data
  * \param add Se true, adiciona. se false, subtrai
  */
-bool addComponentDate(Date* date, enum DateComponent dateComponent, int value, bool add);
+bool addComponentDate(Date** date, enum DateComponent dateComponent, int value, bool add);
 
 /**
  * Imprime no prompt a data em um formato pré-especificado
@@ -183,13 +183,13 @@ bool addComponentDate(Date* date, enum DateComponent dateComponent, int value, b
  *      a ser utilizado (veja o enumerador neste header file)
  * \param weekDayName Se o nome do dia da semana deve constar no final da string
  */
-void printDate(Date* date, enum DateString dateString, bool weekDayName);
+void printDate(Date** date, enum DateString dateString, bool weekDayName);
 
 /**
  * Imprime o nome do dia da semana no prompt
  * \param date Ponteiro para o objeto Date
  */
-void printWeekDate(Date* date);
+void printWeekDate(Date** date);
 
 /**
  * Verifica se uma data é válida

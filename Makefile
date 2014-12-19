@@ -101,7 +101,7 @@ install: buildLib
 	@ln -nsf /usr/local/lib/lib$(LIBRARY_NAME).a /usr/lib/
 	@echo 'done'
 
-# comando para desinstalar a biblioteca no linux/debian (use com sudo)
+# comando para desinstalar a biblioteca no linux ubuntu/debian (use com sudo)
 uninstall:
 	@rm -rf /usr/local/include/$(LIBRARY_NAME)/
 	@rm -rf /usr/local/lib/lib$(LIBRARY_NAME).a /usr/lib/lib$(LIBRARY_NAME).a
